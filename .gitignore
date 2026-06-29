@@ -1,0 +1,8 @@
+.vscode/
+extracted/
+media/
+Release/
+file_descriptor.txt
+*.zip
+media_data.lua
+__pycache__/

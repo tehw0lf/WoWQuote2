@@ -1,0 +1,30 @@
+----------------------------------Release 1.0.0----------------------------------
+2026-6-29	tehw0lf
+	* Rebranded to WoWQuote2 (fork of WoWQuote2 v0.9c)
+	* Added /wq2 as additional slash command alias for the UI
+	* Added WOTLK support (Interface: 30300)
+	* Added Vanilla (Interface: 11200) and TBC (Interface: 20400) as separate build targets
+	* Added localization support for English (base/fallback), French, Dutch, Spanish (esES/esMX) and Portuguese (ptBR)
+	* German localization now properly guarded by GetLocale() check
+	* All locales define WQcategories with translated category names
+	* Category definitions in media_data.lua support per-locale translations
+	* Added GitHub Actions release pipeline (builds empty addon ZIPs on push to main)
+	* Releases are now sound-free (bring your own sounds via WoWQuote-Manager)
+	* Set Guild as default broadcast channel
+	* Build script now generates release ZIPs without requiring new uploads
+
+
+----------------------------------Release 0.9c(20300)----------------------------------
+2008-7-26	Darkoli
+	* Added Gothic 3 sounds (580-591)
+
+
+----------------------------------Release 0.9b(20300)---------------------------------- 
+2008-7-25	Drprof
+	* New Categories
+
+
+----------------------------------Release 0.9a(20300)----------------------------------
+2008-7-25	Drprof
+	* Added new Sounds from CS/UT Themes 
+	* Original by Leotard's WoW Quote 0.8.9

@@ -1,0 +1,65 @@
+name: release pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  release:
+    name: build and release WoWQuote2
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+
+    steps:
+      - name: checkout repository
+        uses: actions/checkout@v7
+
+      - name: set up python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.x"
+
+      - name: build release archives
+        run: python insert_and_build.py
+
+      - name: extract version from TOC
+        id: extract_version
+        run: |
+          VERSION=$(grep "^## Version:" TBC/WoWQuote2.toc | cut -d' ' -f3)
+          if [[ -z "${VERSION}" ]]; then
+            echo "::error::[Release] Could not extract version from TBC/WoWQuote2.toc"
+            exit 1
+          fi
+          echo "release_tag=v${VERSION}" >> $GITHUB_OUTPUT
+          echo "::notice::[Release] Extracted version: v${VERSION}"
+
+      - name: check if release already exists
+        if: github.ref == 'refs/heads/main'
+        id: check_release
+        run: |
+          if gh release view "${{ steps.extract_version.outputs.release_tag }}" &>/dev/null; then
+            echo "::warning::[Release] Release ${{ steps.extract_version.outputs.release_tag }} already exists, skipping"
+            echo "release_exists=true" >> $GITHUB_OUTPUT
+          fi
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: upload release artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: Release/
+
+      - name: create github release
+        if: github.ref == 'refs/heads/main' && steps.check_release.outputs.release_exists != 'true'
+        uses: softprops/action-gh-release@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ steps.extract_version.outputs.release_tag }}
+          name: "Release ${{ steps.extract_version.outputs.release_tag }}"
+          generate_release_notes: true
+          files: Release/**/*

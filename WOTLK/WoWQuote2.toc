@@ -1,0 +1,35 @@
+## Title: WoWQuote2
+## Version: 1.0.0
+## Notes: Receives and transmits sound-quotes
+## Notes-deDE: Empfängt und sendet Sound-Quotes
+## Notes-frFR: Reçoit et transmet des citations sonores
+## Notes-esES: Recibe y transmite citas de sonido
+## Notes-esMX: Recibe y transmite citas de sonido
+## Notes-ptBR: Recebe e transmite citacoes de som
+## Interface: 30300
+##
+## Author: Lev@Die Ewige Wacht, Harag@Die Ewige Wacht, tehw0lf
+## URL: https://github.com/tehw0lf/WoWQuote
+##
+## SavedVariables: WQ_SETTINGS
+## OptionalDeps:
+## Dependencies:
+Media.lua
+
+Localization.en.lua
+Localization.de.lua
+Localization.fr.lua
+Localization.nl.lua
+Localization.es.lua
+Localization.pt.lua
+WoWQuote2.lua
+WoWQuote2.xml
+
+WoWQuote2UI.lua
+LocalizationUI.en.lua
+LocalizationUI.de.lua
+LocalizationUI.fr.lua
+LocalizationUI.nl.lua
+LocalizationUI.es.lua
+LocalizationUI.pt.lua
+WoWQuote2UI.xml
