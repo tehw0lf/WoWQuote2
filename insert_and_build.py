@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 from shutil import copy, move
-from re import findall, search, DOTALL
+from re import findall, search, match, DOTALL, IGNORECASE
 from zipfile import ZipFile
 import os
-from datetime import datetime
 
 
 LOCALE_LANG = {
@@ -53,7 +52,6 @@ class WQ_file_processor:
         self.release_path = os.path.join(self.root_path, "Release")
         self.file_descriptor = os.path.join(self.extraction_path, "file_descriptor.txt")
         self.media_data_file = os.path.join(self.root_path, "media_data.lua")
-        self.date = datetime.today().strftime("%Y-%m-%d")
 
         os.makedirs(self.release_path, exist_ok=True)
         os.makedirs(self.extraction_path, exist_ok=True)
@@ -137,7 +135,7 @@ class WQ_file_processor:
             os.remove(os.path.join(self.release_path, old_file))
 
         for version in versions:
-            self.release_name = "WQ2-" + version + "-" + self.date + ".zip"
+            self.release_name = f"WQ2-{version}-{self.read_toc_version(version)}.zip"
             self.clear_release_specific_files()
             self.copy_release_specific_files(version)
             self.create_release_archive()
@@ -160,6 +158,26 @@ class WQ_file_processor:
             os.remove(self.ui_xml_file)
         except FileNotFoundError:
             pass
+
+    def read_toc_version(self, version: str) -> str:
+        """Read `## Version:` from a client variant's .toc.
+
+        Archives are named after the addon version rather than the build date so
+        the filename matches the release tag, which CI derives from the same
+        field. Dated names could not do that: two releases on one day collided,
+        and a version bump left the old date in the filename.
+
+        Each variant is read separately rather than assuming they agree, so a
+        .toc left un-bumped produces a visibly mismatched archive instead of one
+        silently mislabelled with another variant's version.
+        """
+        toc_path = os.path.join(self.root_path, version, "WoWQuote2.toc")
+        with open(toc_path) as f:
+            for line in f:
+                found = match(r"^##\s*Version:\s*(\S+)", line, IGNORECASE)
+                if found:
+                    return found.group(1)
+        raise ValueError(f"no '## Version:' field in {toc_path}")
 
     def copy_release_specific_files(self, version: str) -> None:
         version_path = os.path.join(self.root_path, version)

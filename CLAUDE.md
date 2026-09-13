@@ -20,7 +20,7 @@ python insert_and_build.py
 This script:
 1. Extracts any `.zip` files placed in `Upload/` (each must contain a `file_descriptor.txt` and `.mp3` files)
 2. Parses `file_descriptor.txt` to auto-number and rename sound files, then inserts new entries into `WoWQuote2/Media.lua`
-3. Produces dated release ZIPs in `Release/` (e.g. `WQ2-TBC-2024-01-01.zip`, `WQ2-Vanilla-2024-01-01.zip`, `WQ2-WOTLK-2024-01-01.zip`) by combining the shared `WoWQuote2/` core with version-specific TOC and UI files from `TBC/`, `Vanilla/`, or `WOTLK/`
+3. Produces versioned release ZIPs in `Release/` (e.g. `WQ2-TBC-1.0.0.zip`, `WQ2-Vanilla-1.0.0.zip`, `WQ2-WOTLK-1.0.0.zip`) by combining the shared `WoWQuote2/` core with version-specific TOC and UI files from `TBC/`, `Vanilla/`, or `WOTLK/`. The version comes from each variant's own `## Version:` field, read per variant rather than assumed identical, so a `.toc` left un-bumped shows up as a mismatched filename instead of being silently mislabelled
 
 ## Architecture
 
@@ -83,11 +83,20 @@ To add sounds for a new contributor prefix, update `insert_and_build.py`:
 
 ## CI/CD
 
-GitHub Actions pipeline at `.github/workflows/release.yml`:
-- **Pull request**: builds all three release ZIPs and uploads them as a workflow artifact for verification
-- **Push to `main`**: builds ZIPs and creates a GitHub Release tagged with the version from `TBC/WoWQuote2.toc`, skipped if the tag already exists
+`.github/workflows/release.yml` calls the reusable workflow from
+[`tehw0lf/workflows`](https://github.com/tehw0lf/workflows):
 
-To release a new version: bump `## Version:` in all three TOC files (`TBC/`, `Vanilla/`, `WOTLK/`), commit, and push to `main`.
+- **Pull request**: lint and security scanning only — nothing is built or published
+- **Push to `main`**: runs `./build.sh`, then tags and publishes one GitHub Release
+  with all three client ZIPs attached as assets, skipped if the tag already exists
+
+The release tag comes from the `## Version:` field of the TOC files, which is also
+what the archive filenames carry, so tag and assets always agree.
+
+To release a new version: bump `## Version:` in all three TOC files (`TBC/`,
+`Vanilla/`, `WOTLK/`), commit, and push to `main`. The workflow warns if the three
+disagree and tags whichever it resolved; an unbumped version means the tag already
+exists and nothing is published.
 
 ## Slash Commands (in-game)
 - `/wq` or `/wq2` — open graphical UI
