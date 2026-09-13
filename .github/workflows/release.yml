@@ -39,9 +39,13 @@ jobs:
       # need and fails with a clear message rather than a SyntaxError.
       tool: bash
 
-      # Only main packages and releases; pull requests build nothing. Releases
-      # are additionally gated on the event being a push inside the reusable
-      # workflow, so a PR cannot publish even if it built.
+      # Built on both pull requests and main, using the same script. Building
+      # only on main would leave the packaging path untested until the moment it
+      # matters - the previous hand-written pipeline built on PRs, and dropping
+      # that would have been a regression. Only main publishes: release_github is
+      # gated on the event being a push inside the reusable workflow, so a PR
+      # cannot release even though it built.
+      build_branch: "./build.sh"
       build_main: "./build.sh"
       artifact_path: "Release"
       publish_github_release: true
