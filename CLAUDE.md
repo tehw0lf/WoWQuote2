@@ -93,6 +93,19 @@ To add sounds for a new contributor prefix, update `insert_and_build.py`:
 The release tag comes from the `## Version:` field of the TOC files, which is also
 what the archive filenames carry, so tag and assets always agree.
 
+**Release archives contain the addon skeleton only — no MP3s, by design.** The
+sounds and `media_data.lua` are deliberately gitignored and never committed, so a
+CI archive is ~45 KB with around 22 files rather than ~15 MB with 180. Users add
+sounds with [WoWQuote2 Manager](https://github.com/tehw0lf/WoWQuote2-Manager),
+which runs client-side and exports an incremental update ZIP containing only new
+MP3s and patched Lua files. It fetches the base `Localization.*.lua` from this
+repo's `main` branch, so those files must keep their current paths under
+`WoWQuote2/`.
+
+A local `python3 insert_and_build.py` run *does* pick up whatever MP3s are sitting
+in `WoWQuote2/` on your machine, so a local archive is much larger than the
+published one. That difference is expected — do not "fix" it by committing media.
+
 To release a new version: bump `## Version:` in all three TOC files (`TBC/`,
 `Vanilla/`, `WOTLK/`), commit, and push to `main`. The workflow warns if the three
 disagree and tags whichever it resolved; an unbumped version means the tag already
