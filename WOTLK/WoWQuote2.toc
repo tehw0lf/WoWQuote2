@@ -1,5 +1,5 @@
 ## Title: WoWQuote2
-## Version: 1.0.0
+## Version: 1.0.1
 ## Notes: Receives and transmits sound-quotes
 ## Notes-deDE: Empfängt und sendet Sound-Quotes
 ## Notes-frFR: Reçoit et transmet des citations sonores
