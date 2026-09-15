@@ -51,7 +51,9 @@ function WQUI:Localize()
 	local L = WoWQuoteUI_Localization
 	local name = self:GetName()
 
-	_G[name.."Title"]:SetText(L.DIALOG_TITLE)
+	-- Version comes from WQ_VERSION rather than the localization files, so it
+	-- lives in one place instead of six translated copies that drift apart.
+	_G[name.."Title"]:SetText(L.DIALOG_TITLE.." v"..(WQ_VERSION or "?"))
 	self.Columns.Text:SetText(L.COLUMN_TEXT)
 	self.Columns.ID:SetText(L.COLUMN_DURATION)
 
