@@ -1,6 +1,6 @@
 -- Misc. Constants
 WQ_MOD_NAME = "WoWQuote2";
-WQ_VERSION = "1.0.0";
+WQ_VERSION = "1.0.2";
 WQ_MEDIA_PATH = "Interface\\AddOns\\"..WQ_MOD_NAME.."\\media\\";
 WQ_DEFAULT_MEDIA_TYPE = ".mp3";
 WQ_MIN_SOUND_DELAY = 3;
