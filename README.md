@@ -64,14 +64,24 @@ a browser app that runs entirely client-side — nothing is uploaded anywhere.
 **→ [Open the Manager](https://tehw0lf.github.io/WoWQuote2-Manager/)**
 
 1. Open the Manager in your browser.
-2. Drop in your MP3 files. The Manager detects durations automatically and lets you set
+2. Drop in your existing setup, if you have one. The sidebar takes a `.zip` as well as
+   loose `.lua` files, so you can drag in a release archive or a previously exported
+   update ZIP and it picks up the `media_data.lua` and `Localization.*.lua` inside.
+   First time round there is nothing to load — skip to the next step.
+3. Drop in your MP3 files. The Manager detects durations automatically and lets you set
    the chat message and category for each entry.
-3. Export an update ZIP for your client version (TBC / Vanilla / WOTLK).
-4. Extract that ZIP into your AddOns directory, over the existing `WoWQuote2` folder.
-5. Restart the game.
+4. Export an update ZIP for your client version (TBC / Vanilla / WOTLK). You get a
+   `WQ2-<variant>-<date>.zip`.
+5. Extract that ZIP into your AddOns directory, over the existing `WoWQuote2` folder.
+6. Restart the game.
 
-The Manager exports *incremental* updates — only new MP3s plus the patched Lua files —
-so adding sounds later does not mean rebuilding everything.
+The export contains the regenerated `Media.lua`, the patched `Localization.*.lua` files,
+and the MP3s you added in this session — it layers over an installed AddOn rather than
+replacing it, so adding sounds later does not mean rebuilding everything.
+
+Note that dropping a ZIP in reads only the Lua files out of it, not the MP3s. Sounds
+already installed in your game folder stay where they are; the Manager only ever bundles
+the ones you drop into it.
 
 Keep the `media_data.lua` the Manager saves. Loading it back on your next visit restores
 your entries and categories, which is how you build a collection over time.
