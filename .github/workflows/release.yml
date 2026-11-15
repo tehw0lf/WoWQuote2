@@ -28,6 +28,7 @@ jobs:
       id-token: write        # required throughout
       security-events: write # SARIF uploads from security scanning
       pull-requests: write   # npm-audit-autofix
+      issues: write          # security-scan-source failure_issue
     with:
       # The build is a plain stdlib Python script, so no toolchain input is
       # needed: `uv` would expect a pyproject.toml this repo does not have, and
