@@ -59,6 +59,7 @@ class WQ_file_processor:
         self.populate_from_media_data()
         self.extract_archives()
         self.create_release_archives(["TBC", "Vanilla", "WOTLK"])
+        self.create_forever_archive()
         self.clear_generated_files()
 
     def _parse_categories(self, block: str) -> list[dict]:
@@ -142,6 +143,56 @@ class WQ_file_processor:
 
         self.clear_release_specific_files()
 
+    def build_forever_media_lua(self) -> str:
+        """Media data for the Forever pack, as `ns.media` / `ns.categories`.
+
+        Same entry format as Media.lua, so the Manager and this script write
+        identical data and Forever/Pack.lua is the only place that knows what the
+        core expects. Empty when media_data.lua is absent (CI), which is what
+        keeps the published archive free of sounds.
+        """
+        media = ""
+        categories: list[dict] = []
+        if os.path.exists(self.media_data_file):
+            with open(self.media_data_file, "r") as f:
+                data = f.read()
+            media_match = search(r"WQmedia_data\s*=\s*\{(.*?)\};", data, DOTALL)
+            if media_match:
+                media = media_match.group(1)
+            cat_match = search(r"WQcategories_data\s*=\s*\{(.*?)\};", data, DOTALL)
+            if cat_match:
+                categories = self._parse_categories(cat_match.group(1))
+
+        out = "local _, ns = ...\n\nns.categories = {\n"
+        for cat in categories:
+            parts = ", ".join(f'{lang} = "{name}"' for lang, name in cat.items())
+            out += f"    {{ {parts} }},\n"
+        out += "}\n\nns.media = {\n" + media + "}\n"
+        return out
+
+    def create_forever_archive(self) -> None:
+        """Package the QuoteMediaWQ2 sound pack for WoW: Forever.
+
+        Unlike the client archives this is a separate addon folder, not the shared
+        core: Forever runs a different WoWQuote2 core that only loads sounds from
+        QuoteMedia packs.
+        """
+        forever_path = os.path.join(self.root_path, "Forever")
+        pack_dir = "QuoteMediaWQ2"
+        version = self.read_toc_version("Forever", f"{pack_dir}.toc")
+        archive = os.path.join(self.release_path, f"WQ2-Forever-{version}.zip")
+
+        with ZipFile(archive, "w") as zip:
+            for file in sorted(os.listdir(forever_path)):
+                zip.write(os.path.join(forever_path, file), f"{pack_dir}/{file}")
+            zip.writestr(f"{pack_dir}/Media.lua", self.build_forever_media_lua())
+            if os.path.isdir(self.media_path):
+                for file in sorted(os.listdir(self.media_path)):
+                    zip.write(
+                        os.path.join(self.media_path, file),
+                        f"{pack_dir}/media/{file}",
+                    )
+
     def create_release_archive(self) -> None:
         with ZipFile(os.path.join(self.release_path, self.release_name), "w") as zip:
             for dirname, _, files in os.walk(self.addon_path):
@@ -159,7 +210,7 @@ class WQ_file_processor:
         except FileNotFoundError:
             pass
 
-    def read_toc_version(self, version: str) -> str:
+    def read_toc_version(self, version: str, toc_name: str = "WoWQuote2.toc") -> str:
         """Read `## Version:` from a client variant's .toc.
 
         Archives are named after the addon version rather than the build date so
@@ -171,7 +222,7 @@ class WQ_file_processor:
         .toc left un-bumped produces a visibly mismatched archive instead of one
         silently mislabelled with another variant's version.
         """
-        toc_path = os.path.join(self.root_path, version, "WoWQuote2.toc")
+        toc_path = os.path.join(self.root_path, version, toc_name)
         with open(toc_path) as f:
             for line in f:
                 found = match(r"^##\s*Version:\s*(\S+)", line, IGNORECASE)
