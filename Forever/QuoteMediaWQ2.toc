@@ -1,0 +1,12 @@
+## Title: QuoteMediaWQ2
+## Version: 1.0.3
+## Notes: WoWQuote2 sound pack for WoW: Forever. Needs the WoWQuote2 AddOn.
+## Notes-deDE: WoWQuote2-Soundpaket für WoW: Forever. Braucht das AddOn WoWQuote2.
+## Interface: 16001
+## Author: tehw0lf
+## URL: https://github.com/tehw0lf/WoWQuote2
+##
+## Dependencies: WoWQuote2
+
+Media.lua
+Pack.lua

@@ -6,6 +6,13 @@ hears the same sound clip play automatically.
 
 Supported clients: **Vanilla (1.12)**, **TBC (2.4)**, **WotLK (3.3.5)**.
 
+**WoW: Forever** runs a different WoWQuote2 (it sends addon messages instead of chat text and
+loads sounds from separate QuoteMedia packs). For it, the `WQ2-Forever-<version>.zip` release
+is a sound pack for that AddOn, not a copy of this one. Install the Forever WoWQuote2 first,
+then extract the pack into `Interface\AddOns` so that `QuoteMediaWQ2\` exists, and fill it
+with the Manager's **Forever** export. Players on the Forever AddOn and players on the
+other clients cannot hear each other's quotes.
+
 ---
 
 ## Important: releases contain no sounds
@@ -182,16 +189,16 @@ Contributors and packagers only — as a player you want the
 ./build.sh
 ```
 
-This produces the three client archives in `Release/`. It requires Python 3.9 or newer
-and uses the standard library only.
+This produces the three client archives and the Forever sound pack in `Release/`. It
+requires Python 3.9 or newer and uses the standard library only.
 
 Note that a local build picks up whatever MP3s are present in `WoWQuote2/media/` on your
 machine, so your local archives are typically much larger than the published ones. That
 difference is expected — the media files and `media_data.lua` are deliberately
 gitignored and never committed.
 
-To cut a release, bump `## Version:` in all three TOC files (`TBC/`, `Vanilla/`,
-`WOTLK/`), commit and push to `main`. CI derives the release tag from that field, so an
+To cut a release, bump `## Version:` in all four TOC files (`TBC/`, `Vanilla/`,
+`WOTLK/`, `Forever/`), commit and push to `main`. CI derives the release tag from that field, so an
 un-bumped version means the tag already exists and nothing is published.
 
 ## Credits and license
