@@ -90,7 +90,7 @@ To add sounds for a new contributor prefix, update `insert_and_build.py`:
 
 - **Pull request**: lint, security scanning and `./build.sh` (the same build as on `main`,
   so the packaging path is tested before a release) — nothing is tagged or published,
-  because the release job runs only on a push to `main`
+  because tagging and publishing run only on a push to `main`
 - **Push to `main`**: runs `./build.sh`, then tags and publishes one GitHub Release
   with the three client ZIPs and the Forever pack ZIP attached as assets, skipped if the tag already exists
 
